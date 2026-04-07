@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 3948304588160539246}
   - component: {fileID: 7365932025159601667}
   - component: {fileID: 7528724531884333465}
+  - component: {fileID: 7221262159440667772}
   m_Layer: 0
   m_Name: Nitrogen Atom Prefab
   m_TagString: Untagged
@@ -284,3 +285,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AtomController
   atomType: 3
+--- !u!114 &7221262159440667772
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7731188988881896876}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 58c6962642e8ab2469f45b8752fde505, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MoleculeInspector
+  infoPanel: {fileID: 0}
+  nameText: {fileID: 0}
+  formulaText: {fileID: 0}
+  bondInfoText: {fileID: 0}

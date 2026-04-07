@@ -7733,6 +7733,7 @@ MonoBehaviour:
   database: {fileID: 11400000, guid: a1afbdc1d938b92438e754227cda2ede, type: 2}
   entryPrefab: {fileID: 1489439731712934536, guid: 9c3ef1f68a1907c449d97ceff467e0d2, type: 3}
   container: {fileID: 779137502}
+  MoleculeInspectorPanel: {fileID: 0}
 --- !u!1 &1260258094
 GameObject:
   m_ObjectHideFlags: 0
