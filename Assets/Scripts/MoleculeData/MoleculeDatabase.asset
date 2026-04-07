@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8debc289ba0a5364d9a8d775dc696dc8, type: 3}
+  m_Name: MoleculeDatabase
+  m_EditorClassIdentifier: Assembly-CSharp::MoleculeDatabase
+  allMolecules:
+  - {fileID: 11400000, guid: 682cab546c3158c448002bf21fba5681, type: 2}
+  - {fileID: 11400000, guid: 71865933426780442966b364557e22d2, type: 2}
+  - {fileID: 11400000, guid: b7373c358f60d5c4ea25fc01373355d6, type: 2}
+  - {fileID: 11400000, guid: 28fe7c7ad560e774ca4418fbbac74d69, type: 2}
+  - {fileID: 11400000, guid: 00ab90100294e114f91a36ce996129c4, type: 2}
+  - {fileID: 11400000, guid: 744120841db152944a3a1f6af7660d86, type: 2}
+  - {fileID: 11400000, guid: eedce418472870e4c920326e4136a65f, type: 2}
