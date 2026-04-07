@@ -6,7 +6,7 @@ public class BondManager : MonoBehaviour
 {
     [Header("Data References")]
     public MoleculeDatabase moleculeDatabase;
-    //public UIManager uiManager;
+    public UIManager uiManager;
     //public AudioManager audioManager;
 
     [Header("Tracking")]
@@ -106,6 +106,11 @@ public class BondManager : MonoBehaviour
         // Feedback
         // audioManager.PlaySuccessSound();
         Debug.Log($"Upgraded to: {recipe.moleculeName}");
+
+        if (uiManager != null)
+        {
+            uiManager.OnMoleculeDiscovered(recipe);
+        }
     }
 
     private void ConsumeLooseAtomsForUpgrade(MoleculeData recipe, MoleculeData oldData)
@@ -196,6 +201,11 @@ public class BondManager : MonoBehaviour
         Debug.Log($"Successfully Formed: {data.moleculeName}");
 
         // DO NOT call CheckForCombination() here.
+
+        if (uiManager != null)
+        {
+            uiManager.OnMoleculeDiscovered(data);
+        }
     }
 
     private void ConsumeIngredients(MoleculeData recipe)
