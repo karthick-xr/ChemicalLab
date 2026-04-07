@@ -21,8 +21,8 @@ MonoBehaviour:
   m_OverrideGlobalSceneList: 1
   m_Scenes:
   - m_enabled: 1
-    m_path: Assets/Samples/XR Interaction Toolkit/3.4.1/Starter Assets/DemoScene.unity
-    m_guid: 319dafa5c80f29f428dc1e0d03f04177
+    m_path: Assets/Scenes/Lab.unity
+    m_guid: 3afa7691fd49ba34ebe07371315ef432
   m_HasScriptingDefines: 0
   m_ScriptingDefines: []
   m_PlayerSettingsYaml:
