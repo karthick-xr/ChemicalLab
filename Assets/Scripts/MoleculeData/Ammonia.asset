@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Ammonia
   m_EditorClassIdentifier: Assembly-CSharp::MoleculeData
   moleculeName: Ammonia
-  formula: nh3
+  formula: NH3
   moleculePrefab: {fileID: 2844737866099781879, guid: c8707fde1e6c3d44c8b150c8383134c3, type: 3}
   requiredAtoms:
   - type: 3
@@ -21,3 +21,4 @@ MonoBehaviour:
   - type: 0
     count: 3
   bondType: Covalent
+  moleculeIcon: {fileID: 21300000, guid: 50c3f4e02af1bbf40898adf376592cd3, type: 3}

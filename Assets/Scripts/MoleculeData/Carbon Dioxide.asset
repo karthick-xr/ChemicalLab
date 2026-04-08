@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Carbon Dioxide
   m_EditorClassIdentifier: Assembly-CSharp::MoleculeData
   moleculeName: Carbon Dioxide
-  formula: co2
+  formula: CO2
   moleculePrefab: {fileID: 9040011137358984937, guid: 13f2812d8a8fe054b9e0d603b0feb610, type: 3}
   requiredAtoms:
   - type: 2
@@ -21,3 +21,4 @@ MonoBehaviour:
   - type: 1
     count: 2
   bondType: Double Covalent
+  moleculeIcon: {fileID: 21300000, guid: e3a61a5b35df07e4096e7478dbc45fcf, type: 3}

@@ -11,6 +11,7 @@ public class UIManager : MonoBehaviour
 
     // Keep track of which UI text belongs to which molecule
     private Dictionary<MoleculeData, TextMeshProUGUI> uiMap = new Dictionary<MoleculeData, TextMeshProUGUI>();
+    private Dictionary<MoleculeData, Image> imageMap = new Dictionary<MoleculeData, Image>();
 
     void Start()
     {
@@ -27,9 +28,16 @@ public class UIManager : MonoBehaviour
         {
             GameObject newEntry = Instantiate(entryPrefab, container);
             TextMeshProUGUI label = newEntry.GetComponentInChildren<TextMeshProUGUI>();
+            Image icon = newEntry.transform.Find("Icon").GetComponent<Image>();
+
+            // Set icon to a "locked" silhouette or just transparent initially
+            icon.sprite = molecule.moleculeIcon;
+            icon.color = Color.black; // Shows a black silhouette initially
 
             label.text = "????"; // Initially hidden
+
             uiMap.Add(molecule, label);
+            imageMap.Add(molecule, icon);
         }
     }
 
@@ -40,6 +48,9 @@ public class UIManager : MonoBehaviour
             // Update the text to the actual name and formula
             uiMap[discoveredData].text = $"{discoveredData.moleculeName} ({discoveredData.formula})";
             uiMap[discoveredData].color = Color.green; // Visual feedback for discovery
+
+            // Reveal Image
+            imageMap[discoveredData].color = Color.white; // Restore full color
 
             // Optional: Play a "New Discovery" sound effect
             Debug.Log($"UI Updated: {discoveredData.moleculeName} is now visible!");

@@ -13,9 +13,10 @@ MonoBehaviour:
   m_Name: Hydrogen Gas
   m_EditorClassIdentifier: Assembly-CSharp::MoleculeData
   moleculeName: Hydrogen Gas
-  formula: h2
+  formula: H2
   moleculePrefab: {fileID: 1129546037571150628, guid: a44924c9dff793145b9498486fa17092, type: 3}
   requiredAtoms:
   - type: 0
     count: 2
   bondType: Single Covalent
+  moleculeIcon: {fileID: 21300000, guid: fafc69240f8ce0c4db10559fc7214935, type: 3}

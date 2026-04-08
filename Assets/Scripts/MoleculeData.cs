@@ -12,6 +12,7 @@ public class MoleculeData : ScriptableObject
     public GameObject moleculePrefab; // The 3D visual of the combined molecule
     public List<AtomCount> requiredAtoms;
     public string bondType; // Single, Double, Triple
+    public Sprite moleculeIcon;
 }
 
 [System.Serializable]

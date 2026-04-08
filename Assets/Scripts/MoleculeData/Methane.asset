@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Methane
   m_EditorClassIdentifier: Assembly-CSharp::MoleculeData
   moleculeName: Methane
-  formula: ch4
+  formula: CH4
   moleculePrefab: {fileID: 3963045895423129903, guid: ad777242dfebe554b892333a48801fc3, type: 3}
   requiredAtoms:
   - type: 2
@@ -21,3 +21,4 @@ MonoBehaviour:
   - type: 0
     count: 4
   bondType: Covalent
+  moleculeIcon: {fileID: 21300000, guid: de4e7a14774a0cd4eb4cd8c20d596572, type: 3}

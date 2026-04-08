@@ -13,9 +13,10 @@ MonoBehaviour:
   m_Name: Oxygen Gas
   m_EditorClassIdentifier: Assembly-CSharp::MoleculeData
   moleculeName: Oxygen Gas
-  formula: o2
+  formula: O2
   moleculePrefab: {fileID: 5070654906333146179, guid: 0c0a9c11b5bf10d4181ff2b3963daf32, type: 3}
   requiredAtoms:
   - type: 1
     count: 2
   bondType: Double Covalent
+  moleculeIcon: {fileID: 21300000, guid: 676db333bf2dd314cbfb6e748925b04e, type: 3}
