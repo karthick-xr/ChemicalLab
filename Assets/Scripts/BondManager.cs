@@ -7,7 +7,6 @@ public class BondManager : MonoBehaviour
     [Header("Data References")]
     public MoleculeDatabase moleculeDatabase;
     public UIManager uiManager;
-    //public AudioManager audioManager;
 
     [Header("Tracking")]
     private List<AtomController> atomsInZone = new List<AtomController>();
@@ -66,51 +65,90 @@ public class BondManager : MonoBehaviour
 
     private void CheckForUpgrades(Dictionary<AtomType, int> loosePool, List<MoleculeData> sortedRecipes)
     {
+        // 1. Calculate the TOTAL pool of everything in the zone
+        Dictionary<AtomType, int> totalPool = new Dictionary<AtomType, int>(loosePool);
+        foreach (var mol in moleculesInZone)
+        {
+            foreach (var req in mol.moleculeData.requiredAtoms)
+                AddAtomsToDict(totalPool, req.type, req.count);
+        }
+
         foreach (var recipe in sortedRecipes)
         {
-            // 1. Find all molecules in the zone that could POTENTIALLY be part of this recipe
-            // For H2O, this would find H2. It would NOT find NH3 because NH3 has Nitrogen.
-            var potentialCandidates = moleculesInZone
-                .Where(m => DoesRecipeContainMolecule(recipe, m.moleculeData))
-                .OrderByDescending(m => m.moleculeData.requiredAtoms.Sum(a => a.count)) // Try upgrading largest possible first
-                .ToList();
+            // If we can make it from loose atoms, skip the "Upgrade" checks and just make it
+            Dictionary<AtomType, int> loosePoolOnly = new Dictionary<AtomType, int>();
+            foreach (var a in atomsInZone) AddAtomsToDict(loosePoolOnly, a.atomType, 1);
 
-            foreach (var candidate in potentialCandidates)
+            if (CanForm(recipe, loosePoolOnly))
             {
-                // 2. Check if the Loose Atoms + this SPECIFIC candidate = the Recipe
-                if (CanFormWithSpecificMolecule(recipe, candidate, loosePool))
-                {
-                    // We found a perfect match! Upgrade ONLY this candidate.
-                    CreateUpgradeMolecule(recipe, candidate);
-                    return;
-                }
+                CreateMolecule(recipe, true);
+                return;
+            }
+
+            // Otherwise, proceed with the "Total Pool" upgrade logic...
+            if (CanForm(recipe, totalPool))
+            {
+                if (IsIllegalDowngrade(recipe) || IsAlreadyPresent(recipe)) continue;
+                CreateMultiComponentMolecule(recipe);
+                return;
             }
         }
     }
-
-    private void CreateUpgradeMolecule(MoleculeData recipe, MoleculeController moleculeToReplace)
+    private bool IsIllegalDowngrade(MoleculeData newRecipe)
     {
-        Vector3 spawnPos = moleculeToReplace.transform.position;
-
-        // 1. Remove the specific molecule from our tracking list and destroy it
-        moleculesInZone.Remove(moleculeToReplace);
-        Destroy(moleculeToReplace.gameObject);
-
-        // 2. Consume only the loose atoms needed to finish the recipe
-        // (Since the molecule already provided some atoms, we only need the rest)
-        ConsumeLooseAtomsForUpgrade(recipe, moleculeToReplace.moleculeData);
-
-        // 3. Spawn the new Molecule
-        Instantiate(recipe.moleculePrefab, spawnPos + (Vector3.up * 0.1f), Quaternion.identity);
-
-        // Feedback
-        // audioManager.PlaySuccessSound();
-        Debug.Log($"Upgraded to: {recipe.moleculeName}");
-
-        if (uiManager != null)
+        int newSize = newRecipe.requiredAtoms.Sum(a => a.count);
+        foreach (var mol in moleculesInZone)
         {
-            uiManager.OnMoleculeDiscovered(recipe);
+            if (mol.moleculeData.requiredAtoms.Sum(a => a.count) > newSize)
+                return true;
         }
+        return false;
+    }
+    private bool IsAlreadyPresent(MoleculeData recipe)
+    {
+        // 1. How many of this molecule do we ALREADY have?
+        int existingCount = moleculesInZone.Count(m => m.moleculeData == recipe);
+
+        // 2. How many of this molecule COULD we make using ONLY the loose atoms?
+        // (We use a temporary pool to check this)
+        Dictionary<AtomType, int> loosePool = new Dictionary<AtomType, int>();
+        foreach (var a in atomsInZone) AddAtomsToDict(loosePool, a.atomType, 1);
+
+        bool canMakeFromLoose = CanForm(recipe, loosePool);
+
+        // 3. THE LOGIC:
+        // If we already have the molecule AND we can't make a NEW one from just the loose atoms,
+        // then any "match" found by the Total Pool is just a redundant loop.
+        if (existingCount > 0 && !canMakeFromLoose)
+        {
+            // One exception: If the loose atoms help make a BIGGER molecule (like CH4), 
+            // this function won't be called for H2 because CheckForUpgrades sorts by complexity.
+            return true;
+        }
+
+        return false;
+    }
+
+    private void CreateMultiComponentMolecule(MoleculeData recipe)
+    {
+        // 1. Calculate Spawn Position (Average of ingredients)
+        Vector3 spawnPos = transform.position + Vector3.up * 0.1f;
+
+        // 2. Use your existing "Smart" ConsumeIngredients logic!
+        // Since ConsumeIngredients already handles both loose atoms AND molecules,
+        // it will naturally take 1 Carbon, the first H2, and then the second H2.
+        ConsumeIngredients(recipe);
+
+        // 3. Spawn the CH4
+        GameObject newMol = Instantiate(recipe.moleculePrefab, spawnPos, Quaternion.identity);
+        newMol.transform.position += new Vector3(Random.Range(-0.05f, 0.05f), 0, Random.Range(-0.05f, 0.05f));
+
+        // Trigger Sound!
+        AudioManager.Instance.PlayMoleculeCreated(spawnPos);
+
+        Debug.Log($"Successfully Formed Multi-Component: {recipe.moleculeName}");
+
+        if (uiManager != null) uiManager.OnMoleculeDiscovered(recipe);
     }
 
     private void ConsumeLooseAtomsForUpgrade(MoleculeData recipe, MoleculeData oldData)
@@ -130,48 +168,6 @@ public class BondManager : MonoBehaviour
                 Destroy(a.gameObject);
             }
         }
-    }
-
-    private bool CanFormWithSpecificMolecule(MoleculeData targetRecipe, MoleculeController existingMol, Dictionary<AtomType, int> loosePool)
-    {
-        // 1. Start with the atoms inside the existing molecule
-        Dictionary<AtomType, int> combinedPool = new Dictionary<AtomType, int>();
-        foreach (var req in existingMol.moleculeData.requiredAtoms)
-        {
-            AddAtomsToDict(combinedPool, req.type, req.count);
-        }
-
-        // 2. Add the loose atoms available in the zone
-        foreach (var entry in loosePool)
-        {
-            AddAtomsToDict(combinedPool, entry.Key, entry.Value);
-        }
-
-        // 3. Check if this combined pool satisfies the NEW recipe
-        foreach (var req in targetRecipe.requiredAtoms)
-        {
-            if (!combinedPool.ContainsKey(req.type) || combinedPool[req.type] < req.count)
-            {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    private bool DoesRecipeContainMolecule(MoleculeData newRecipe, MoleculeData oldMolecule)
-    {
-        foreach (var oldReq in oldMolecule.requiredAtoms)
-        {
-            // Check if the new recipe even uses this atom type
-            var newReq = newRecipe.requiredAtoms.FirstOrDefault(r => r.type == oldReq.type);
-
-            // If the old molecule has Nitrogen (NH3) but the new recipe (H2O) doesn't,
-            // newReq.count will be 0. This returns false and saves the Ammonia!
-            if (newReq.count < oldReq.count)
-                return false;
-        }
-        return true;
     }
 
     private bool CanForm(MoleculeData recipe, Dictionary<AtomType, int> pool)
@@ -201,6 +197,9 @@ public class BondManager : MonoBehaviour
         Debug.Log($"Successfully Formed: {data.moleculeName}");
 
         // DO NOT call CheckForCombination() here.
+
+        // Trigger Sound!
+        AudioManager.Instance.PlayMoleculeCreated(spawnPos);
 
         if (uiManager != null)
         {

@@ -18,6 +18,9 @@ public class MoleculeController : MonoBehaviour
             }
         }
 
+        Vector3 pos = transform.position;
+        AudioManager.Instance.PlaySeparation(pos);
+
         // Play a "break" sound or particle effect here
         Destroy(gameObject);
     }
@@ -30,6 +33,7 @@ public class MoleculeController : MonoBehaviour
             // Spawn with a slight random offset so they don't overlap perfectly
             Vector3 spawnPos = transform.position + Random.insideUnitSphere * 0.1f;
             Instantiate(prefabToSpawn, spawnPos, Quaternion.identity);
+            AudioManager.Instance.PlayAtomSpawn(spawnPos);
         }
     }
 }

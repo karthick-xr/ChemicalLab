@@ -18,8 +18,9 @@ public class AtomDispenser : MonoBehaviour
             GameObject prefab = atomRegistry.GetPrefab(type);
             if (prefab != null)
             {
-                Instantiate(prefab, spawnLocation.position, spawnLocation.rotation);
+                GameObject g =Instantiate(prefab, spawnLocation.position, spawnLocation.rotation);
                 // Play a "click" or "spawn" sound here
+                AudioManager.Instance.PlayAtomSpawn(g.transform.position);
             }
         }
         else
